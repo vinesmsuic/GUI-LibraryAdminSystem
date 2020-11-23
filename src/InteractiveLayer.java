@@ -151,7 +151,11 @@ public class InteractiveLayer extends JPanel {
 					removeBook(ISBN, title);
 				}
 			} else if (e.getSource() == jbtSearch) {
-
+				if (ISBN.equals("") && title.equals("")) {
+					JOptionPane.showMessageDialog(new UI().getFrame(), "Error: Input field cannot be empty!");
+				} else {
+					searchBook(ISBN, title);
+				}
 			} else if (e.getSource() == jbtMore) {
 
 			} else if (e.getSource() == jbtLoad) {
@@ -210,16 +214,7 @@ public class InteractiveLayer extends JPanel {
 
 	public boolean addBook(String ISBN, String title) {
 
-		boolean duplicate = false;
-
-		for (Book bk : bookLinkedList) {
-			if (bk.getISBN().equals(ISBN)) {
-				duplicate = true;
-				break;
-			}
-		}
-
-		if (duplicate) {
+		if (locateISBN(ISBN)!=-1) {
 			JOptionPane.showMessageDialog(new UI().getFrame(),
 					"Error: book " + ISBN + " exists in the current database");
 			return false;
@@ -228,26 +223,27 @@ public class InteractiveLayer extends JPanel {
 			bookLinkedList.add(bk);
 			tModel.addRow(new String[] { bk.getISBN(), bk.getTitle(), bk.getAvailable() });
 			clearTextField();
+			ISBN_ASC = false;
+			Title_ASC = false;
+			TextAreaLayer.refreshTime();
 			return true;
 		}
 	}
 
-	public boolean removeBook(String ISBN, String title) {
+	public boolean removeBook(String ISBN, String title) {	//awaits correction, if display no sort by node GG
 
-		boolean found = false;
-		int index = -1;
-
-		for (int i = 0; i < bookLinkedList.size(); i++) {
-			if (bookLinkedList.get(i).getISBN().equals(ISBN)) {
-				found = true;
-				index = i;
-				break;
+		int index = locateISBN(ISBN);
+		if (index!=-1) {
+			for (int i=0;i<tModel.getRowCount();i++) {
+				if (ISBN.equals(tModel.getValueAt(i, 0).toString())) {
+					tModel.removeRow(i);
+					break;
+				}
 			}
-		}
-
-		if (found) {
-			tModel.removeRow(index);
 			bookLinkedList.remove(index);
+			ISBN_ASC = false;
+			Title_ASC = false;
+			TextAreaLayer.refreshTime();
 			return true;
 		} else {
 			JOptionPane.showMessageDialog(new UI().getFrame(),
@@ -258,20 +254,11 @@ public class InteractiveLayer extends JPanel {
 
 	public int editBook(String ISBN) {
 
-		boolean found = false;
 		String title = "";
-		int index = -1;
+		int index = locateISBN(ISBN);
 
-		for (int i = 0; i < bookLinkedList.size(); i++) {
-			if (bookLinkedList.get(i).getISBN().equals(ISBN)) {
-				found = true;
-				title = bookLinkedList.get(i).getTitle();
-				index = i;
-				break;
-			}
-		}
-
-		if (found) {
+		if (index!=-1) {
+			title = bookLinkedList.get(index).getTitle();
 			inputTitle.setText(title);
 			editMode();
 		} else {
@@ -285,13 +272,32 @@ public class InteractiveLayer extends JPanel {
 		if (newISBN.equals("") || newTitle.equals("")) {
 			JOptionPane.showMessageDialog(new UI().getFrame(), "Error: Input field cannot be empty!");
 			return false;
+		} else if (locateISBN(newISBN)!=-1) {
+			JOptionPane.showMessageDialog(new UI().getFrame(),
+					"Error: book " + newISBN + " exists in the current database");
+			return false;
 		} else {
 			bookLinkedList.get(index).setISBN(newISBN);
 			bookLinkedList.get(index).setTitle(newTitle);
 			tModel.setValueAt(newISBN, index, 0);
 			tModel.setValueAt(newTitle, index, 1);
 			viewMode();
+			ISBN_ASC = false;
+			Title_ASC = false;
+			TextAreaLayer.refreshTime();
 			return true;
+		}
+	}
+
+	private void searchBook(String ISBN, String Title) {
+		clearTable();
+		clearTextField();
+		for (Book bk : bookLinkedList) {
+			if ((!ISBN.equals(""))&&(bk.getISBN().contains(ISBN))) {
+				tModel.addRow(new String[] { bk.getISBN(), bk.getTitle(), bk.getAvailable() });
+			} else if ((!Title.equals(""))&&(bk.getTitle().contains(Title))) {
+				tModel.addRow(new String[] { bk.getISBN(), bk.getTitle(), bk.getAvailable() });
+			}
 		}
 	}
 
@@ -346,5 +352,14 @@ public class InteractiveLayer extends JPanel {
 					.compareToIgnoreCase(((bookLinkedList.get(b2)).getTitle())));
 		}
 		return Order;
+	}
+
+	public int locateISBN(String ISBN) {
+		for (int i = 0; i < bookLinkedList.size(); i++) {
+			if (bookLinkedList.get(i).getISBN().equals(ISBN)) {
+				return i;
+			}
+		}
+		return -1;
 	}
 }
