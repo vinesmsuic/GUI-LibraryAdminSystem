@@ -9,6 +9,13 @@ public class Book{
         available = true;
         reservedQueue = new MyQueue<String>();
     }
+    
+    public Book(String ISBN, String title){
+    	this.ISBN = ISBN;
+    	this.title = title;
+        available = true;
+        reservedQueue = new MyQueue<String>();
+    }
 
     public String getTitle(){
         return title;
@@ -20,6 +27,12 @@ public class Book{
 
     public boolean isAvailable(){
         return available;
+    }
+    
+    public String getAvailable() {
+    	if(available)
+    		return "true";
+    	return "false";
     }
 
     public MyQueue<String> getReservedQueue(){
