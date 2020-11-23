@@ -181,15 +181,15 @@ public class MyLinkedList<E> implements MyList<E> {
 	@Override /** Return the element at the specified index */
 	public E get(int index) {
 		// Left as an exercise 
-		if (index == size-1)
+		if (index < 0 || index >= size) 
+			return null;
+		if (index == size - 1)
 			return getLast();
 		Node<E> current = head;
-		for (int i = 0; i < size; i++){
-			if (i == index)
-				return current.element;
+		for (int i = 0; i < index; i++){
 			current = current.next;
 		}
-		return null;
+		return current.element;
 	}
 
 	@Override /** Return the index of the first matching element in 
