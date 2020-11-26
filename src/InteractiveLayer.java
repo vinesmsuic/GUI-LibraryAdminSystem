@@ -5,6 +5,8 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -55,6 +57,8 @@ public class InteractiveLayer extends JPanel {
 	JTable jtb = new JTable(tModel);
 	JScrollPane jspane = new JScrollPane(jtb);
 
+	JFrame thisFrame;
+
 	MyLinkedList<Book> bookLinkedList = new MyLinkedList<Book>();
 	
 	boolean ISBN_ASC = true;
@@ -63,8 +67,11 @@ public class InteractiveLayer extends JPanel {
 	// Reserved for Editing and Saving
 	int editIndex = -1;
 
-	public InteractiveLayer() {
+	public InteractiveLayer(JFrame thisFrame) {
 		
+		//Saving Frame
+		this.thisFrame = thisFrame;
+
 		//Loading Previous Data
 		clearTable();
 		bookLinkedList = readCSV();
@@ -139,6 +146,14 @@ public class InteractiveLayer extends JPanel {
 		add(tableSubLayer, BorderLayout.CENTER);
 		add(btnSubLayer, BorderLayout.SOUTH);
 
+		// Set a window listener for closing application
+		thisFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                askSave();
+            }
+        });
+
 		// Enable User to click on the table
 		jtb.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 
@@ -166,8 +181,6 @@ public class InteractiveLayer extends JPanel {
 			System.out.println("" + ((JButton) e.getSource()).getText());
 			String ISBN = inputISBN.getText();
 			String title = inputTitle.getText();
-			//For testing purpose
-			saveCSV();
 
 			if (e.getSource() == jbtAdd) {
 				if (ISBN.equals("") || title.equals("")) {
@@ -206,7 +219,8 @@ public class InteractiveLayer extends JPanel {
                         "Error: book " + ISBN + " does not exists in the current database");
                     } else {
                     	MoreUILayer more = new MoreUILayer(bookLinkedList.get(index));
-                    	more.setVisible(true);
+						more.setVisible(true);
+						
                     }
                 }
 
@@ -254,7 +268,7 @@ public class InteractiveLayer extends JPanel {
 				}
 				Title_ASC = !Title_ASC;
 			} else if (e.getSource() == jbtExit) {
-				System.exit(0);
+				askSave();
 			}
 		}
 	}
@@ -430,6 +444,7 @@ public class InteractiveLayer extends JPanel {
 			File csvFile = new File("log/log.csv");
 			FileWriter csvWriter;
 			csvWriter = new FileWriter(csvFile); //This need to be fixed
+			/*
 			csvWriter.append("ISBN");
 			csvWriter.append("\t");
 			csvWriter.append("Title");
@@ -438,7 +453,7 @@ public class InteractiveLayer extends JPanel {
 			csvWriter.append("\t");
 			csvWriter.append("Queue");
 			csvWriter.append("\n");
-			
+			*/
 			
 			for (Book bk : bookLinkedList) {
 				csvWriter.append(bk.getLogInfo());
@@ -466,7 +481,7 @@ public class InteractiveLayer extends JPanel {
 					Book bk = new Book(data[0], data[1], data[2], data[3]);
 					csvHolder.add(bk);
 				}
-				csvHolder.remove(0); //Remove Header (i.e. [ISBN, Title, Available])
+				//csvHolder.remove(0); //Remove Header (i.e. [ISBN, Title, Available])
 				csvReader.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -480,5 +495,15 @@ public class InteractiveLayer extends JPanel {
 		return csvHolder;
 	}
 	
-
+	public void askSave() {
+		int dialogResult = JOptionPane.showConfirmDialog (null, "Would You Like to Save the Booklist?", "Library Admin System", JOptionPane.YES_NO_OPTION);
+		if(dialogResult == JOptionPane.YES_OPTION){	
+			saveCSV();
+			thisFrame.dispose();
+			System.exit(0);
+		} else if(dialogResult == JOptionPane.NO_OPTION){	
+			thisFrame.dispose();
+			System.exit(0);
+		}
+	}
 }

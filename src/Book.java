@@ -37,19 +37,20 @@ public class Book{
     		this.available = true;
     	}else {
     		this.available = false;
-    	}
+        }
+        reservedQueue = new MyQueue<String>();
+        String sb1 = ququeList.replace("Queue: ", "");
+        if (sb1.length()>2){
+            StringBuilder sb = new StringBuilder(sb1);
+    	    sb.deleteCharAt(sb.length() - 1);
+            sb.deleteCharAt(0);
+            String[] names = sb.toString().split(", ");
+            System.out.println("is My Regex working!? \n" + sb.toString() + "\n ---------------");
+            for(String name: names) {
+            	reservedQueue.enqueue(name);
+            }
+        }
     	
-//    	String removePrefix = ququeList.replace("Queue: ", "");
-//    	StringBuilder sb = new StringBuilder(removePrefix);
-//    	sb.deleteCharAt(removePrefix.length() - 1);
-//    	sb.deleteCharAt(0);
-//    	String[] names = sb.toString().split(",");
-//    	System.out.println("is My Regex working!? \n" + sb.toString() + "\n ---------------");
-//        reservedQueue = new MyQueue<String>();
-//        for(String name: names) {
-//        		reservedQueue.enqueue(name);
-//        }
-        
     }
 
     public String getTitle(){

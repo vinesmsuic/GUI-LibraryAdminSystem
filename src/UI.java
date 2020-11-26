@@ -9,7 +9,7 @@ public class UI extends JFrame{
 
 		frameHolder.setLayout(new BorderLayout(5,5));
 		
-		frameHolder.add(new InteractiveLayer(), BorderLayout.CENTER);
+		frameHolder.add(new InteractiveLayer(this), BorderLayout.CENTER);
 		
 		add(frameHolder);
 	}
@@ -20,7 +20,7 @@ public class UI extends JFrame{
 		frame.setTitle("Library Admin System");
 		frame.setSize(600, 400);
         frame.setLocationRelativeTo(null); // Center the frame 
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.setVisible(true);
 	}
 	
