@@ -1,3 +1,4 @@
+/*
 import javax.swing.*;
 import java.awt.*;
 import java.util.Date;
@@ -23,3 +24,4 @@ public class TextAreaLayer extends JPanel {
 		Time.setText(formatter.format(new Date(System.currentTimeMillis())));
 	}
 }
+*/

@@ -5,10 +5,25 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class InteractiveLayer extends JPanel {
-
+	
+	//TextAreaLayer
+	String names = "Student Name and ID: Ku Wing Fung (18075712d) \n"
+			+ "Student Name and ID: Wong Tsz Hin (18050573d)";
+	JTextArea Time;
+	SimpleDateFormat formatter;
+	JTextArea nameText = new JTextArea(names);
+	
 	JPanel inputPanel = new JPanel();
 	JLabel jlISBN = new JLabel("ISBN:");
 	JTextField inputISBN = new JTextField();
@@ -30,6 +45,7 @@ public class InteractiveLayer extends JPanel {
 	JButton jbtDisplayByTitle = new JButton("Display All by Title");
 	JButton jbtExit = new JButton("Exit");
 
+	JPanel textAreaLayer = new JPanel();
 	JPanel btnSubLayer = new JPanel();
 	JPanel tableSubLayer = new JPanel();
 
@@ -48,10 +64,26 @@ public class InteractiveLayer extends JPanel {
 	int editIndex = -1;
 
 	public InteractiveLayer() {
+		
+		//Loading Previous Data
+		clearTable();
+		bookLinkedList = readCSV();
+		for (int i = 0; i < bookLinkedList.size(); i++) {
+			Book bk = bookLinkedList.get(i);
+			tModel.addRow(new String[] { bk.getISBN(), bk.getTitle(), bk.getAvailable() });
+		}
+		//--------------------------
+		
 
 		// Wider Input Field
 		inputISBN.setPreferredSize(new Dimension(100, 20));
 		inputTitle.setPreferredSize(new Dimension(100, 20));
+		
+		//Set TextViewArea
+		formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+		Time = new JTextArea(formatter.format(new Date(System.currentTimeMillis())));
+		Time.setEditable(false);
+		nameText.setEditable(false);
 
 		// Set Listener for EVERY BUTTON
 		ButtonListener listener = new ButtonListener();
@@ -89,6 +121,10 @@ public class InteractiveLayer extends JPanel {
 		jbtSave.setEnabled(false);
 
 		// Finally Pack the Panels and show
+		textAreaLayer.setLayout(new GridLayout(0,1));
+		textAreaLayer.add(nameText);
+		textAreaLayer.add(Time);
+		
 		btnSubLayer.setLayout(new GridLayout(0, 1));
 		btnSubLayer.add(inputPanel);
 		btnSubLayer.add(btnPanel);
@@ -97,7 +133,8 @@ public class InteractiveLayer extends JPanel {
 		tableSubLayer.setLayout(new GridLayout(0, 1));
 		tableSubLayer.add(jspane);
 
-		setLayout(new GridLayout(2, 1));
+		setLayout(new GridLayout(3, 1));
+		add(textAreaLayer);
 		add(tableSubLayer);
 		add(btnSubLayer);
 
@@ -157,11 +194,28 @@ public class InteractiveLayer extends JPanel {
 					searchBook(ISBN, title);
 				}
 			} else if (e.getSource() == jbtMore) {
+				if (ISBN.equals("")) {
+                    JOptionPane.showMessageDialog(new UI().getFrame(), "Error: ISBN cannot be empty!");
+                } else {
+                    int index = locateISBN(ISBN);
+                    if (index==-1) {
+                        JOptionPane.showMessageDialog(new UI().getFrame(),
+                        "Error: book " + ISBN + " does not exists in the current database");
+                    } else {
+                    	if (MoreUILayer.existing()) {
+                            JOptionPane.showMessageDialog(new UI().getFrame(), "Error: You cannot open two setting!");
+                        } else {
+                            new MoreUILayer(bookLinkedList.get(index));
+                        }
+                    }
+                }
 
 			} else if (e.getSource() == jbtLoad) {
 				addBook("0131450913", "HTML How to Program");
 				addBook("0131857576", "C++ How to Program");
 				addBook("0132222205", "Java How to Program");
+				//For testing purpose
+				saveCSV();
 			} else if (e.getSource() == jbtDisplay) {
 				Book bk;
 				clearTable();
@@ -225,7 +279,8 @@ public class InteractiveLayer extends JPanel {
 			clearTextField();
 			ISBN_ASC = false;
 			Title_ASC = false;
-			TextAreaLayer.refreshTime();
+			//TextAreaLayer.refreshTime();
+			refreshTime();
 			return true;
 		}
 	}
@@ -243,7 +298,8 @@ public class InteractiveLayer extends JPanel {
 			bookLinkedList.remove(index);
 			ISBN_ASC = false;
 			Title_ASC = false;
-			TextAreaLayer.refreshTime();
+			//TextAreaLayer.refreshTime();
+			refreshTime();
 			return true;
 		} else {
 			JOptionPane.showMessageDialog(new UI().getFrame(),
@@ -284,7 +340,8 @@ public class InteractiveLayer extends JPanel {
 			viewMode();
 			ISBN_ASC = false;
 			Title_ASC = false;
-			TextAreaLayer.refreshTime();
+//			TextAreaLayer.refreshTime();
+			refreshTime();
 			return true;
 		}
 	}
@@ -362,4 +419,68 @@ public class InteractiveLayer extends JPanel {
 		}
 		return -1;
 	}
+	
+	public void refreshTime() {
+		Time.setText(formatter.format(new Date(System.currentTimeMillis())));
+	}
+	
+	public boolean saveCSV() {	
+	
+		try {
+			File csvFolder = new File("log");
+			if(!csvFolder.isDirectory())
+			{
+				csvFolder.mkdir();
+			}
+			File csvFile = new File("log/log.csv");
+			FileWriter csvWriter;
+			csvWriter = new FileWriter(csvFile); //This need to be fixed
+			csvWriter.append("ISBN");
+			csvWriter.append("\t");
+			csvWriter.append("Title");
+			csvWriter.append("\t");
+			csvWriter.append("Available");
+			csvWriter.append("\n");
+			
+			for (Book bk : bookLinkedList) {
+				csvWriter.append(bk.getLogInfo());
+			}
+			
+			csvWriter.flush();
+			csvWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
+	public MyLinkedList<Book> readCSV() {	
+		MyLinkedList<Book> csvHolder = new MyLinkedList<Book>();
+		String row = "";
+		try {
+			BufferedReader csvReader = new BufferedReader(new FileReader("log/log.csv"));
+			try {
+				while ((row = csvReader.readLine()) != null) {
+					String[] data = row.split("\t");
+					System.out.println(java.util.Arrays.deepToString(data));
+					Book bk = new Book(data[0], data[1], data[2]);
+					csvHolder.add(bk);
+				}
+				csvHolder.remove(0); //Remove Header (i.e. [ISBN, Title, Available])
+				csvReader.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return csvHolder;
+	}
+	
+
 }

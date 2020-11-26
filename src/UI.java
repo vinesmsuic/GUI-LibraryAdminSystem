@@ -12,7 +12,6 @@ public class UI extends JFrame{
 //		frameHolder.add(new TableLayer(), BorderLayout.CENTER);
 //		frameHolder.add(new InteractiveLayer(), BorderLayout.SOUTH);
 		
-		frameHolder.add(new TextAreaLayer(), BorderLayout.NORTH);
 		frameHolder.add(new InteractiveLayer(), BorderLayout.CENTER);
 		
 		add(frameHolder);

@@ -16,6 +16,18 @@ public class Book{
         available = true;
         reservedQueue = new MyQueue<String>();
     }
+    
+    public Book(String ISBN, String title, String available){
+    	this.ISBN = ISBN;
+    	this.title = title;
+    	if(available.contains("true"))
+    	{
+    		this.available = true;
+    	}else {
+    		this.available = false;
+    	}
+        reservedQueue = new MyQueue<String>();
+    }
 
     public String getTitle(){
         return title;
@@ -54,4 +66,15 @@ public class Book{
     public void setReservedQueue(MyQueue<String> reservedQueue){
         this.reservedQueue = reservedQueue;
     }
+    
+	//Using tab as separator
+	public String getLogInfo() {
+		String tabString = this.getISBN();
+		tabString += "\t";
+		tabString += this.getTitle();
+		tabString += "\t";
+		tabString += this.getAvailable();
+		tabString += "\n";
+		return tabString;
+	}
 }
