@@ -2,8 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowAdapter;
 
 public class MoreUILayer extends JDialog {
     
@@ -17,12 +15,13 @@ public class MoreUILayer extends JDialog {
     JButton jbtWaitingQueue = new JButton("Waiting Queue");
     JTextArea bookInfo = new JTextArea();
     JTextArea sysMessage = new JTextArea();
-    
-    private static boolean opened = false;
-    
+
     public MoreUILayer(Book bk) {
         targetBook = bk;
         refreshInfo();
+        
+        //Set focus
+        setModal(true);
 
         frameHolder.setLayout(new BorderLayout(5,5));
         bookInfo.setEditable(false);
@@ -40,7 +39,6 @@ public class MoreUILayer extends JDialog {
         this.setSize(500, 300);
         this.setLocationRelativeTo(null); // Center the frame 
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        this.setVisible(true);
 
         ButtonListener jbtlistener = new ButtonListener();
         jbtBorrow.addActionListener(jbtlistener);
@@ -48,38 +46,19 @@ public class MoreUILayer extends JDialog {
         jbtReserve.addActionListener(jbtlistener);
         jbtWaitingQueue.addActionListener(jbtlistener);
         
-        opened = true;
-        this.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosed(WindowEvent e) {
-                opened = false;
-            }
-        });
-        
     }
 
     class ButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
         	System.out.println("" + ((JButton) e.getSource()).getText());
             if (e.getSource()==jbtBorrow) {
-            	targetBook.setAvailable(false);
-            	refreshInfo();
-            	
+            	jbtBorrowPerformed();
             } else if (e.getSource()==jbtReturn) {
-            	targetBook.getReservedQueue().dequeue();
-            	sysMessage.setText("This book is returned.");
-            	if(targetBook.getReservedQueue().getSize() == 0) {
-            		targetBook.setAvailable(true);
-            	}
-            	refreshInfo();
-            	
+            	jbtReturnPerformed();	
             } else if (e.getSource()==jbtReserve) {
-            	String name = JOptionPane.showInputDialog("What'your name?");
-            	targetBook.getReservedQueue().enqueue(name);
-            	sysMessage.setText("This book is reserved by "  + name + ".");
-
+            	jbtReservePerformed();
             } else if (e.getSource()==jbtWaitingQueue) {
-            	sysMessage.setText(targetBook.getWaitingQueueMsg());
+            	jbtWaitingQueuePerformed();
             }
         }
     }
@@ -100,9 +79,31 @@ public class MoreUILayer extends JDialog {
         	sysMessage.setText("");
         }
     }
-    
-    public static boolean existing() {
-        return opened;
+
+    public void jbtBorrowPerformed() {
+    	targetBook.setAvailable(false);
+    	refreshInfo();
     }
+    
+    public void jbtReturnPerformed(){
+    	targetBook.getReservedQueue().dequeue();
+    	sysMessage.setText("This book is returned.");
+    	if(targetBook.getReservedQueue().getSize() == 0) {
+    		targetBook.setAvailable(true);
+    	}
+    	refreshInfo();
+    }
+    
+    public void jbtReservePerformed() {
+    	String name = JOptionPane.showInputDialog("What'your name?");
+    	targetBook.getReservedQueue().enqueue(name);
+    	sysMessage.setText("This book is reserved by "  + name + ".");
+    }
+    
+    public void jbtWaitingQueuePerformed() {
+    	sysMessage.setText(targetBook.getWaitingQueueMsg());
+    }
+    
+    
     
 }

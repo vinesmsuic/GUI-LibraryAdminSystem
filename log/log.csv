@@ -1,5 +1,4 @@
-ISBN	Title	Available
-88	555	true
-0131450913	HTML How to Program	true
-0131857576	C++ How to Program	true
-0132222205	Java How to Program	true
+ISBN	Title	Available	Queue
+0131450913	HTML How to Program	false	Queue: [A, B]
+0131857576	C++ How to Program	true	Queue: [
+0132222205	Java How to Program	true	Queue: [

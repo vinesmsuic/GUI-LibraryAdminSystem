@@ -28,6 +28,29 @@ public class Book{
     	}
         reservedQueue = new MyQueue<String>();
     }
+    
+    public Book(String ISBN, String title, String available, String ququeList){
+    	this.ISBN = ISBN;
+    	this.title = title;
+    	if(available.contains("true"))
+    	{
+    		this.available = true;
+    	}else {
+    		this.available = false;
+    	}
+    	
+//    	String removePrefix = ququeList.replace("Queue: ", "");
+//    	StringBuilder sb = new StringBuilder(removePrefix);
+//    	sb.deleteCharAt(removePrefix.length() - 1);
+//    	sb.deleteCharAt(0);
+//    	String[] names = sb.toString().split(",");
+//    	System.out.println("is My Regex working!? \n" + sb.toString() + "\n ---------------");
+//        reservedQueue = new MyQueue<String>();
+//        for(String name: names) {
+//        		reservedQueue.enqueue(name);
+//        }
+        
+    }
 
     public String getTitle(){
         return title;
@@ -83,6 +106,8 @@ public class Book{
 		tabString += this.getTitle();
 		tabString += "\t";
 		tabString += this.getAvailable();
+		tabString += "\t";
+		tabString += this.getReservedQueue().toString();
 		tabString += "\n";
 		return tabString;
 	}

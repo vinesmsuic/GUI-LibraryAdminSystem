@@ -166,6 +166,8 @@ public class InteractiveLayer extends JPanel {
 			System.out.println("" + ((JButton) e.getSource()).getText());
 			String ISBN = inputISBN.getText();
 			String title = inputTitle.getText();
+			//For testing purpose
+			saveCSV();
 
 			if (e.getSource() == jbtAdd) {
 				if (ISBN.equals("") || title.equals("")) {
@@ -203,11 +205,8 @@ public class InteractiveLayer extends JPanel {
                         JOptionPane.showMessageDialog(new UI().getFrame(),
                         "Error: book " + ISBN + " does not exists in the current database");
                     } else {
-                    	if (MoreUILayer.existing()) {
-                            JOptionPane.showMessageDialog(new UI().getFrame(), "Error: You cannot open two setting!");
-                        } else {
-                            new MoreUILayer(bookLinkedList.get(index));
-                        }
+                    	MoreUILayer more = new MoreUILayer(bookLinkedList.get(index));
+                    	more.setVisible(true);
                     }
                 }
 
@@ -215,8 +214,6 @@ public class InteractiveLayer extends JPanel {
 				addBook("0131450913", "HTML How to Program");
 				addBook("0131857576", "C++ How to Program");
 				addBook("0132222205", "Java How to Program");
-				//For testing purpose
-				saveCSV();
 			} else if (e.getSource() == jbtDisplay) {
 				Book bk;
 				clearTable();
@@ -280,7 +277,6 @@ public class InteractiveLayer extends JPanel {
 			clearTextField();
 			ISBN_ASC = false;
 			Title_ASC = false;
-			//TextAreaLayer.refreshTime();
 			refreshTime();
 			return true;
 		}
@@ -299,7 +295,6 @@ public class InteractiveLayer extends JPanel {
 			bookLinkedList.remove(index);
 			ISBN_ASC = false;
 			Title_ASC = false;
-			//TextAreaLayer.refreshTime();
 			refreshTime();
 			return true;
 		} else {
@@ -341,7 +336,6 @@ public class InteractiveLayer extends JPanel {
 			viewMode();
 			ISBN_ASC = false;
 			Title_ASC = false;
-//			TextAreaLayer.refreshTime();
 			refreshTime();
 			return true;
 		}
@@ -441,7 +435,10 @@ public class InteractiveLayer extends JPanel {
 			csvWriter.append("Title");
 			csvWriter.append("\t");
 			csvWriter.append("Available");
+			csvWriter.append("\t");
+			csvWriter.append("Queue");
 			csvWriter.append("\n");
+			
 			
 			for (Book bk : bookLinkedList) {
 				csvWriter.append(bk.getLogInfo());
@@ -466,7 +463,7 @@ public class InteractiveLayer extends JPanel {
 				while ((row = csvReader.readLine()) != null) {
 					String[] data = row.split("\t");
 					System.out.println(java.util.Arrays.deepToString(data));
-					Book bk = new Book(data[0], data[1], data[2]);
+					Book bk = new Book(data[0], data[1], data[2], data[3]);
 					csvHolder.add(bk);
 				}
 				csvHolder.remove(0); //Remove Header (i.e. [ISBN, Title, Available])
