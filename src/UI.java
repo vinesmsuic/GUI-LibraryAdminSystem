@@ -8,9 +8,6 @@ public class UI extends JFrame{
 	public UI() {
 
 		frameHolder.setLayout(new BorderLayout(5,5));
-//		frameHolder.add(new TextAreaLayer(), BorderLayout.NORTH);
-//		frameHolder.add(new TableLayer(), BorderLayout.CENTER);
-//		frameHolder.add(new InteractiveLayer(), BorderLayout.SOUTH);
 		
 		frameHolder.add(new InteractiveLayer(), BorderLayout.CENTER);
 		

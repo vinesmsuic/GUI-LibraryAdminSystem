@@ -50,6 +50,15 @@ public class Book{
     public MyQueue<String> getReservedQueue(){
         return reservedQueue;
     }
+    
+    public String getWaitingQueueMsg() {
+    	String sysMsg = "The waiting queue: \n";
+    	for (String name : this.getReservedQueue().getList()) {
+    		sysMsg += name;
+    		sysMsg += "\n";
+    	}
+    	return sysMsg;
+    }
 
     public void setTitle(String title){
         this.title = title;

@@ -66,11 +66,20 @@ public class MoreUILayer extends JDialog {
             	refreshInfo();
             	
             } else if (e.getSource()==jbtReturn) {
-
+            	targetBook.getReservedQueue().dequeue();
+            	sysMessage.setText("This book is returned.");
+            	if(targetBook.getReservedQueue().getSize() == 0) {
+            		targetBook.setAvailable(true);
+            	}
+            	refreshInfo();
+            	
             } else if (e.getSource()==jbtReserve) {
+            	String name = JOptionPane.showInputDialog("What'your name?");
+            	targetBook.getReservedQueue().enqueue(name);
+            	sysMessage.setText("This book is reserved by "  + name + ".");
 
             } else if (e.getSource()==jbtWaitingQueue) {
-
+            	sysMessage.setText(targetBook.getWaitingQueueMsg());
             }
         }
     }

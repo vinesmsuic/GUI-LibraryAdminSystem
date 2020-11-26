@@ -133,10 +133,11 @@ public class InteractiveLayer extends JPanel {
 		tableSubLayer.setLayout(new GridLayout(0, 1));
 		tableSubLayer.add(jspane);
 
-		setLayout(new GridLayout(3, 1));
-		add(textAreaLayer);
-		add(tableSubLayer);
-		add(btnSubLayer);
+		//setLayout(new GridLayout(3, 1));
+		setLayout(new BorderLayout(5,5));
+		add(textAreaLayer,BorderLayout.NORTH);
+		add(tableSubLayer, BorderLayout.CENTER);
+		add(btnSubLayer, BorderLayout.SOUTH);
 
 		// Enable User to click on the table
 		jtb.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -226,7 +227,7 @@ public class InteractiveLayer extends JPanel {
 			} else if (e.getSource() == jbtDisplayByISBN) {
 				Book bk;
 				clearTable();
-				ArrayList Order = getSortOrder(1);
+				ArrayList<Integer> Order = getSortOrder(1);
 				if (ISBN_ASC) {
 					for (int i = 0; i < bookLinkedList.size(); i++) {
 						bk = bookLinkedList.get((int) Order.get(i));
@@ -242,7 +243,7 @@ public class InteractiveLayer extends JPanel {
 			} else if (e.getSource() == jbtDisplayByTitle) {
 				Book bk;
 				clearTable();
-				ArrayList Order = getSortOrder(2);
+				ArrayList<Integer> Order = getSortOrder(2);
 				if (Title_ASC) {
 					for (int i = 0; i < bookLinkedList.size(); i++) {
 						bk = bookLinkedList.get((int) Order.get(i));
