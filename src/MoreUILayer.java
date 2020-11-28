@@ -20,9 +20,10 @@ public class MoreUILayer extends JDialog {
         targetBook = bk;
         refreshInfo();
         
-        //Set focus
+        //Set focus to this window, so user cannot interact with the other window
         setModal(true);
 
+        //Configuring the user interface
         frameHolder.setLayout(new BorderLayout(5,5));
         bookInfo.setEditable(false);
         frameHolder.add(bookInfo, BorderLayout.NORTH);
@@ -48,9 +49,10 @@ public class MoreUILayer extends JDialog {
         
     }
 
+    //Configure the button listener to call the corresponding functions
     class ButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-        	System.out.println("" + ((JButton) e.getSource()).getText());
+        	System.out.println("" + ((JButton) e.getSource()).getText());   //showing the button pressed for debugging purpose
             if (e.getSource()==jbtBorrow) {
             	jbtBorrowPerformed();
             } else if (e.getSource()==jbtReturn) {
@@ -63,6 +65,7 @@ public class MoreUILayer extends JDialog {
         }
     }
     
+    //Setting the newest information of the book for display, and reset the button status of the user interface
     private void refreshInfo() {
         String info = "ISBN: " + targetBook.getISBN() + "\nTitle: " + targetBook.getTitle() + "\nAvailable: " + targetBook.getAvailable() +"\n";
         bookInfo.setText(info);
@@ -71,20 +74,16 @@ public class MoreUILayer extends JDialog {
         jbtReturn.setEnabled(!available);
         jbtReserve.setEnabled(!available);
         jbtWaitingQueue.setEnabled(!available);
-        if(!available) {
-        	sysMessage.setText("The book is borrowed.");
-        }
-        else
-        {
-        	sysMessage.setText("");
-        }
     }
 
+    //Perform the borrow action of the book
     public void jbtBorrowPerformed() {
-    	targetBook.setAvailable(false);
+        targetBook.setAvailable(false);
+        sysMessage.setText("The book is borrowed.");
     	refreshInfo();
     }
     
+    //Perform the return action of the book
     public void jbtReturnPerformed(){
     	targetBook.getReservedQueue().dequeue();
     	sysMessage.setText("This book is returned.");
@@ -94,12 +93,14 @@ public class MoreUILayer extends JDialog {
     	refreshInfo();
     }
     
+    //Ask for the input of a name and mark it as a reserver of the book
     public void jbtReservePerformed() {
     	String name = JOptionPane.showInputDialog("What'your name?");
     	targetBook.getReservedQueue().enqueue(name);
     	sysMessage.setText("This book is reserved by "  + name + ".");
     }
     
+    //Display the reserved queue of the book
     public void jbtWaitingQueuePerformed() {
     	sysMessage.setText(targetBook.getWaitingQueueMsg());
     }

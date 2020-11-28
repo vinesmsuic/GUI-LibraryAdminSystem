@@ -2,27 +2,27 @@ public class MyQueue<E> {
   private MyLinkedList<E> list 
     = new MyLinkedList<E>();
 
+  //Add a new element to the end of queue
   public void enqueue(E e) {
-    // Left as an exercise
     list.addLast(e);
   }
 
+  //Remove and return the first element of the queue
   public E dequeue() {
-    // Left as an exercise
     return list.removeFirst();
   }
 
+  //Return the size of the queue
   public int getSize() {
-    // Left as an exercise
     return list.size();
   }
 
-  public MyLinkedList<E> getList()
-  {
-    // Left as an exercise
+  //Return the list of the queue
+  public MyLinkedList<E> getList() {
     return list;
   }
   
+  //Return the queue as a string
   @Override
   public String toString() {
     return "Queue: " + list.toString();
