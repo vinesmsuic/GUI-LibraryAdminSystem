@@ -21,9 +21,4 @@ public class UI extends JFrame{
         frame.setVisible(true);
 	}
 	
-	//Return the panel which holds the interactive layer
-	public JPanel getFrame() {
-		return frameHolder;
-	}
-	
 }

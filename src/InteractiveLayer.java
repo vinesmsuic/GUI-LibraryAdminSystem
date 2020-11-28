@@ -217,9 +217,9 @@ public class InteractiveLayer extends JPanel {
 	Pop up message dialog if error is found */
 	public void jbtAddBook(String ISBN, String title) {
 		if (ISBN.equals("") || title.equals("")) {
-			JOptionPane.showMessageDialog(new UI().getFrame(), "Error: Input field cannot be empty!");
+			JOptionPane.showMessageDialog(thisFrame, "Error: Input field cannot be empty!");
 		} else if (locateISBN(ISBN)!=-1) {
-			JOptionPane.showMessageDialog(new UI().getFrame(),
+			JOptionPane.showMessageDialog(thisFrame,
 					"Error: book " + ISBN + " exists in the current database");
 		} else {
 			Book bk = new Book(ISBN, title);
@@ -236,11 +236,11 @@ public class InteractiveLayer extends JPanel {
 	Pop up message dialog if error is found */
 	public void jbtRemoveBook(String ISBN) {
 		if (ISBN.equals("")) {
-			JOptionPane.showMessageDialog(new UI().getFrame(), "Error: Input field cannot be empty!");
+			JOptionPane.showMessageDialog(thisFrame, "Error: Input field cannot be empty!");
 		} else {
 			int index = locateISBN(ISBN);
 			if (index==-1) {
-				JOptionPane.showMessageDialog(new UI().getFrame(),
+				JOptionPane.showMessageDialog(thisFrame,
 					"Error: book " + ISBN + " does not exists in the current database");
 			} else {
 				for (int i=0;i<tModel.getRowCount();i++) {
@@ -262,12 +262,12 @@ public class InteractiveLayer extends JPanel {
 	Pop up message dialog if error is found */
 	public int jbtEditBook(String ISBN) {
 		if (ISBN.equals("")) {
-			JOptionPane.showMessageDialog(new UI().getFrame(), "Error: ISBN cannot be empty!");
+			JOptionPane.showMessageDialog(thisFrame, "Error: ISBN cannot be empty!");
 			return -1;
 		} else {
 			int index = locateISBN(ISBN);
 			if (index==-1) {
-				JOptionPane.showMessageDialog(new UI().getFrame(),
+				JOptionPane.showMessageDialog(thisFrame,
 					"Error: book " + ISBN + " does not exists in the current database");
 			} else {
 				String title = bookLinkedList.get(index).getTitle();
@@ -282,9 +282,9 @@ public class InteractiveLayer extends JPanel {
 	Pop up message dialog if error is found */
 	public void jbtSaveBook(String newISBN, String newTitle) {
 		if (newISBN.equals("") || newTitle.equals("")) {
-			JOptionPane.showMessageDialog(new UI().getFrame(), "Error: Input field cannot be empty!");
+			JOptionPane.showMessageDialog(thisFrame, "Error: Input field cannot be empty!");
 		} else if (locateISBN(newISBN)!=-1) {
-			JOptionPane.showMessageDialog(new UI().getFrame(),
+			JOptionPane.showMessageDialog(thisFrame,
 					"Error: book " + newISBN + " exists in the current database");
 		} else {
 			String originalISBN = bookLinkedList.get(editIndex).getISBN();	//record the original ISBN for table searching
@@ -307,7 +307,7 @@ public class InteractiveLayer extends JPanel {
 	//Search for books which match the information and display them on table
 	private void jbtSearchBook(String ISBN, String title) {
 		if (ISBN.equals("") && title.equals("")) {
-			JOptionPane.showMessageDialog(new UI().getFrame(), "Error: Input field cannot be empty!");
+			JOptionPane.showMessageDialog(thisFrame, "Error: Input field cannot be empty!");
 		} else {
 			clearTable();
 			clearTextField();
@@ -325,11 +325,11 @@ public class InteractiveLayer extends JPanel {
 	Pop up message dialog if error is found */
 	private void jbtMorePerformed(String ISBN) {
 		if (ISBN.equals("")) {
-			JOptionPane.showMessageDialog(new UI().getFrame(), "Error: ISBN cannot be empty!");
+			JOptionPane.showMessageDialog(thisFrame, "Error: ISBN cannot be empty!");
 		} else {
 			int index = locateISBN(ISBN);
 			if (index==-1) {
-				JOptionPane.showMessageDialog(new UI().getFrame(),
+				JOptionPane.showMessageDialog(thisFrame,
 				"Error: book " + ISBN + " does not exists in the current database");
 			} else {
 				Book targetBook = bookLinkedList.get(index);
@@ -458,7 +458,7 @@ public class InteractiveLayer extends JPanel {
 	}
 	
 	//Save the information in the book linkedlist into a file
-	public boolean saveCSV() {	
+	public void saveCSV() {	
 		try {
 			File csvFolder = new File("log");
 			if (!csvFolder.isDirectory()){
@@ -474,9 +474,7 @@ public class InteractiveLayer extends JPanel {
 			csvWriter.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-			return false;
 		}
-		return true;
 	}
 	
 	/* Read the data of a file and return an updated book linkedlist 
@@ -494,10 +492,10 @@ public class InteractiveLayer extends JPanel {
 				}
 				csvReader.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				//e.printStackTrace();		//For debugging purpose, disabled as unnecessary
 			}
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			//e.printStackTrace();		//For debugging purpose, disabled as unnecessary
 		}
 		
 		return csvHolder;
