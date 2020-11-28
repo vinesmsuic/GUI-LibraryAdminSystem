@@ -249,12 +249,12 @@ public class InteractiveLayer extends JPanel {
 				JOptionPane.showMessageDialog(thisFrame,
 					"Error: book ISBN does not exists in the current database");
 			} else {
-				clearTextField();
 				bookLinkedList.remove(index);
 				ISBN_ASC = true;
 				Title_ASC = true;
 				refreshTime();
 				jbtDisplayAll();
+				clearTextField();
 			}
 		}
 	}
@@ -421,7 +421,6 @@ public class InteractiveLayer extends JPanel {
 
 	//Clear the display table of the application
 	private void clearTable() {
-		System.out.println(tModel.getRowCount());
 		while (tModel.getRowCount() > 0) {
 			tModel.removeRow(0);
 		}
