@@ -1,3 +1,8 @@
+/**
+ * @author: Ku Wing Fung 18075712d
+ * @author: Wong Tsz Hin 18050573d
+ */
+
 public class MyQueue<E> {
   private MyLinkedList<E> list 
     = new MyLinkedList<E>();

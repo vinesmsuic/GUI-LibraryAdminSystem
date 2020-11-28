@@ -1,4 +1,7 @@
-//import MyLinkedList.Node;
+/**
+ * @author: Ku Wing Fung 18075712d
+ * @author: Wong Tsz Hin 18050573d
+ */
 
 public class MyLinkedList<E> implements MyList<E> {
 	protected Node<E> head, tail;
@@ -12,7 +15,6 @@ public class MyLinkedList<E> implements MyList<E> {
 
 	/** Create a list from an array of objects */
 	public MyLinkedList(E[] objects) {
-		// Left as an exercise
 		if (objects.length > 0){
 			for (int i = objects.length - 1; i >= 0; i--){
 				addFirst(objects[i]);
@@ -27,7 +29,6 @@ public class MyLinkedList<E> implements MyList<E> {
 			return head.element;
 		else 
 			return null;
-		// Left as an exercise
 	}
 
 	/** Return the last element in the list */
@@ -36,7 +37,6 @@ public class MyLinkedList<E> implements MyList<E> {
 			return tail.element;
 		else 
 			return null;
-		// Left as an exercise
 	}
 
 	/** Add an element to the beginning of the list */
@@ -47,7 +47,6 @@ public class MyLinkedList<E> implements MyList<E> {
 		size++;
 		if (tail == null)
 			tail = head;
-		// Left as an exercise
 	}
 
 	/** Add an element to the end of the list */
@@ -59,7 +58,6 @@ public class MyLinkedList<E> implements MyList<E> {
 			tail = tail.next;
 		}
 		size++;
-		// Left as an exercise
 	}
 
 	@Override /** Add a new element at the specified index 
@@ -78,7 +76,6 @@ public class MyLinkedList<E> implements MyList<E> {
 			(current.next).next = temp;
 			size++;
 		}
-		// Left as an exercise
 	}
 
 	/** Remove the head node and
@@ -94,7 +91,6 @@ public class MyLinkedList<E> implements MyList<E> {
 				tail = null;
 			return temp.element;
 		}
-		// Left as an exercise
 	}
 
 	/** Remove the last node and
@@ -117,7 +113,6 @@ public class MyLinkedList<E> implements MyList<E> {
 			size--;
 			return temp.element;
 		}
-		// Left as an exercise
 	}
 
 	@Override /** Remove the element at the specified position in this 
@@ -139,7 +134,6 @@ public class MyLinkedList<E> implements MyList<E> {
 			size--;
 			return current.element;
 		}
-		// Left as an exercise
 	}
 
 	@Override /** Override toString() to return elements in the list */
@@ -166,7 +160,6 @@ public class MyLinkedList<E> implements MyList<E> {
 		head = null;
 		tail = null;
 		size = 0;
-		// Left as an exercise
 	}
 
 	@Override /** Return true if this list contains the element e */
@@ -195,7 +188,6 @@ public class MyLinkedList<E> implements MyList<E> {
 	@Override /** Return the index of the first matching element in 
 	 *  this list. Return -1 if no match. */
 	public int indexOf(Object e) {
-		// Left as an exercise
 		if (size == 0)
 			return -1;
 		else {
@@ -212,7 +204,6 @@ public class MyLinkedList<E> implements MyList<E> {
 	@Override /** Return the index of the last matching element in 
 	 *  this list. Return -1 if no match. */
 	public int lastIndexOf(E e) {
-		// Left as an exercise
 		if (size == 0)
 			return -1;
 		else {
@@ -230,7 +221,6 @@ public class MyLinkedList<E> implements MyList<E> {
 	@Override /** Replace the element at the specified position 
 	 *  in this list with the specified element. */
 	public E set(int index, E e) {
-		// Left as an exercise
 		Node<E> current = head;
 		for (int i = 0; i < size; i++){
 			if (i == index){
@@ -280,12 +270,10 @@ public class MyLinkedList<E> implements MyList<E> {
 		public Node(E o) {
 			element = o;
 		}
-		// Left as an exercise
 	}
 
 	@Override /** Return the number of elements in this list */
 	public int size() {
 		return size;
-		// Left as an exercise
 	}
 }

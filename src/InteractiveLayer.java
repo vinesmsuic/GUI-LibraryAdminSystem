@@ -1,3 +1,8 @@
+/**
+ * @author: Ku Wing Fung 18075712d
+ * @author: Wong Tsz Hin 18050573d
+ */
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -22,7 +27,7 @@ public class InteractiveLayer extends JPanel {
 	//Variables for setting up the user interface
 	String names = "Student Name and ID: Ku Wing Fung (18075712d) \n"
 			+ "Student Name and ID: Wong Tsz Hin (18050573d)";
-	JTextArea Time;
+	JTextArea time;
 	SimpleDateFormat formatter;
 	JTextArea nameText = new JTextArea(names);
 	
@@ -63,6 +68,7 @@ public class InteractiveLayer extends JPanel {
 	//Variable to store the frame of the application
 	JFrame thisFrame;
 
+	//Book linkedlist for the system
 	MyLinkedList<Book> bookLinkedList = new MyLinkedList<Book>();
 	
 	/* Variable to store the status of display order for the display all buttons
@@ -90,8 +96,8 @@ public class InteractiveLayer extends JPanel {
 		
 		//Configure the TextAreaLayer
 		formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
-		Time = new JTextArea(formatter.format(new Date(System.currentTimeMillis())));
-		Time.setEditable(false);
+		time = new JTextArea(formatter.format(new Date(System.currentTimeMillis())));
+		time.setEditable(false);
 		nameText.setEditable(false);
 
 		//Set listener for the buttons
@@ -132,7 +138,7 @@ public class InteractiveLayer extends JPanel {
 		//Combine the panels for display
 		textAreaLayer.setLayout(new GridLayout(0,1));
 		textAreaLayer.add(nameText);
-		textAreaLayer.add(Time);
+		textAreaLayer.add(time);
 		
 		btnSubLayer.setLayout(new GridLayout(0, 1));
 		btnSubLayer.add(inputPanel);
@@ -215,10 +221,10 @@ public class InteractiveLayer extends JPanel {
 
 	/*Add the book to the table and book linked list
 	Pop up message dialog if error is found */
-	public void jbtAddBook(String ISBN, String title) {
+	private void jbtAddBook(String ISBN, String title) {
 		if (ISBN.equals("") || title.equals("")) {
 			JOptionPane.showMessageDialog(thisFrame, "Error: Input field cannot be empty!");
-		} else if (locateISBN(ISBN)!=-1) {
+		} else if (locateISBN(ISBN) != -1) {
 			JOptionPane.showMessageDialog(thisFrame,
 					"Error: book " + ISBN + " exists in the current database");
 		} else {
@@ -226,33 +232,29 @@ public class InteractiveLayer extends JPanel {
 			bookLinkedList.add(bk);
 			tModel.addRow(new String[] { bk.getISBN(), bk.getTitle(), bk.getAvailable() });
 			clearTextField();
-			ISBN_ASC = false;
-			Title_ASC = false;
+			ISBN_ASC = true;
+			Title_ASC = true;
 			refreshTime();
 		}
 	}
 
 	/*Remove book from the table and book linked list
 	Pop up message dialog if error is found */
-	public void jbtRemoveBook(String ISBN) {
+	private void jbtRemoveBook(String ISBN) {
 		if (ISBN.equals("")) {
 			JOptionPane.showMessageDialog(thisFrame, "Error: Input field cannot be empty!");
 		} else {
 			int index = locateISBN(ISBN);
-			if (index==-1) {
+			if (index == -1) {
 				JOptionPane.showMessageDialog(thisFrame,
-					"Error: book " + ISBN + " does not exists in the current database");
+					"Error: book ISBN does not exists in the current database");
 			} else {
-				for (int i=0;i<tModel.getRowCount();i++) {
-					if (ISBN.equals(tModel.getValueAt(i, 0).toString())) {
-						tModel.removeRow(i);
-						break;
-					}
-				}
+				clearTextField();
 				bookLinkedList.remove(index);
-				ISBN_ASC = false;
-				Title_ASC = false;
+				ISBN_ASC = true;
+				Title_ASC = true;
 				refreshTime();
+				jbtDisplayAll();
 			}
 		}
 	}
@@ -260,15 +262,15 @@ public class InteractiveLayer extends JPanel {
 	/*Set the application to lock the interface and set title as the input field
 	Return the index of the book being edited in the book linkedlist
 	Pop up message dialog if error is found */
-	public int jbtEditBook(String ISBN) {
+	private int jbtEditBook(String ISBN) {
 		if (ISBN.equals("")) {
 			JOptionPane.showMessageDialog(thisFrame, "Error: ISBN cannot be empty!");
 			return -1;
 		} else {
 			int index = locateISBN(ISBN);
-			if (index==-1) {
+			if (index == -1) {
 				JOptionPane.showMessageDialog(thisFrame,
-					"Error: book " + ISBN + " does not exists in the current database");
+					"Error: book ISBN does not exists in the current database");
 			} else {
 				String title = bookLinkedList.get(index).getTitle();
 				inputTitle.setText(title);
@@ -280,26 +282,27 @@ public class InteractiveLayer extends JPanel {
 
 	/* Save the input values as changes to the book and unlock the buttons
 	Pop up message dialog if error is found */
-	public void jbtSaveBook(String newISBN, String newTitle) {
+	private void jbtSaveBook(String newISBN, String newTitle) {
 		if (newISBN.equals("") || newTitle.equals("")) {
 			JOptionPane.showMessageDialog(thisFrame, "Error: Input field cannot be empty!");
-		} else if (locateISBN(newISBN)!=-1) {
+		} else if ((locateISBN(newISBN) != -1) && (locateISBN(newISBN) != editIndex)) {
 			JOptionPane.showMessageDialog(thisFrame,
-					"Error: book " + newISBN + " exists in the current database");
+					"Error: book ISBN exists in the current database");
 		} else {
 			String originalISBN = bookLinkedList.get(editIndex).getISBN();	//record the original ISBN for table searching
 			bookLinkedList.get(editIndex).setISBN(newISBN);
 			bookLinkedList.get(editIndex).setTitle(newTitle);
-			for (int i=0;i<tModel.getRowCount();i++) {		//Update the book information display, if the book existed in the table
+			for (int i = 0; i < tModel.getRowCount(); i++) {		//Update the book information display, if the book existed in the table
 				if (tModel.getValueAt(i, 0).toString().equals(originalISBN)) {
 					tModel.setValueAt(newISBN, i, 0);
 					tModel.setValueAt(newTitle, i, 1);
 					break;
 				}
 			}
+			clearTextField();
 			lockButton(false);
-			ISBN_ASC = false;
-			Title_ASC = false;
+			ISBN_ASC = true;
+			Title_ASC = true;
 			refreshTime();
 		}
 	}
@@ -312,7 +315,7 @@ public class InteractiveLayer extends JPanel {
 			clearTable();
 			clearTextField();
 			for (Book bk : bookLinkedList) {
-				if ((!ISBN.equals(""))&&(bk.getISBN().contains(ISBN))) {
+				if ((!ISBN.equals("")) && (bk.getISBN().contains(ISBN))) {
 					tModel.addRow(new String[] { bk.getISBN(), bk.getTitle(), bk.getAvailable() });
 				} else if ((!title.equals(""))&&(bk.getTitle().contains(title))) {
 					tModel.addRow(new String[] { bk.getISBN(), bk.getTitle(), bk.getAvailable() });
@@ -328,14 +331,14 @@ public class InteractiveLayer extends JPanel {
 			JOptionPane.showMessageDialog(thisFrame, "Error: ISBN cannot be empty!");
 		} else {
 			int index = locateISBN(ISBN);
-			if (index==-1) {
+			if (index == -1) {
 				JOptionPane.showMessageDialog(thisFrame,
-				"Error: book " + ISBN + " does not exists in the current database");
+				"Error: book ISBN does not exists in the current database");
 			} else {
 				Book targetBook = bookLinkedList.get(index);
 				MoreUILayer more = new MoreUILayer(targetBook);
 				more.setVisible(true);
-				for (int i=0;i<tModel.getRowCount();i++) {		//Update the book information display, if the book existed in the table
+				for (int i = 0; i < tModel.getRowCount(); i++) {		//Update the book information display, if the book existed in the table
 					if (ISBN.equals(tModel.getValueAt(i, 0).toString())) {
 						tModel.setValueAt(targetBook.getAvailable(), i, 2);
 						break;
@@ -411,13 +414,13 @@ public class InteractiveLayer extends JPanel {
 	}
 
 	//Empty the text field
-	public void clearTextField() {
+	private void clearTextField() {
 		inputISBN.setText("");
 		inputTitle.setText("");
 	}
 
 	//Clear the display table of the application
-	public void clearTable() {
+	private void clearTable() {
 		System.out.println(tModel.getRowCount());
 		while (tModel.getRowCount() > 0) {
 			tModel.removeRow(0);
@@ -426,7 +429,7 @@ public class InteractiveLayer extends JPanel {
 
 	/*Return the sorted list of index of books in the book linked list
 	by input parameter: type = 1 for ISBN order, type = 2 for Title order */
-	public ArrayList<Integer> getSortOrder(int type) {
+	private ArrayList<Integer> getSortOrder(int type) {
 		ArrayList<Integer> Order = new ArrayList<>();
 		for (int i = 0; i < bookLinkedList.size(); i++) {
 			Order.add(i);
@@ -443,7 +446,7 @@ public class InteractiveLayer extends JPanel {
 
 	/* look for the index of the book containing a certain ISBN value in the book list
 	Return value -1 if the ISBN is not found in the list */
-	public int locateISBN(String ISBN) {
+	private int locateISBN(String ISBN) {
 		for (int i = 0; i < bookLinkedList.size(); i++) {
 			if (bookLinkedList.get(i).getISBN().equals(ISBN)) {
 				return i;
@@ -453,12 +456,12 @@ public class InteractiveLayer extends JPanel {
 	}
 	
 	//Update the time display of the application
-	public void refreshTime() {
-		Time.setText(formatter.format(new Date(System.currentTimeMillis())));
+	private void refreshTime() {
+		time.setText(formatter.format(new Date(System.currentTimeMillis())));
 	}
 	
 	//Save the information in the book linkedlist into a file
-	public void saveCSV() {	
+	private void saveCSV() {	
 		try {
 			File csvFolder = new File("log");
 			if (!csvFolder.isDirectory()){
@@ -479,7 +482,7 @@ public class InteractiveLayer extends JPanel {
 	
 	/* Read the data of a file and return an updated book linkedlist 
 	Return an empty book linkedlist if file not found */
-	public MyLinkedList<Book> readCSV() {	
+	private MyLinkedList<Book> readCSV() {	
 		MyLinkedList<Book> csvHolder = new MyLinkedList<Book>();
 		String row = "";
 		try {
@@ -503,7 +506,7 @@ public class InteractiveLayer extends JPanel {
 	
 	/* Show a dialog box which confirms the user intention of closing the application
 	Ask for whether to save the current library book linkedlist for usage next time */
-	public void askSave() {
+	private void askSave() {
 		int dialogResult = JOptionPane.showConfirmDialog (null, "Would You Like to Save the Booklist?", "Library Admin System", JOptionPane.YES_NO_OPTION);
 		if(dialogResult == JOptionPane.YES_OPTION){	
 			saveCSV();

@@ -1,3 +1,8 @@
+/**
+ * @author: Ku Wing Fung 18075712d
+ * @author: Wong Tsz Hin 18050573d
+ */
+
 public class Book{
     private String title; // store the title of the book
     private String ISBN; // store the ISBN of the book

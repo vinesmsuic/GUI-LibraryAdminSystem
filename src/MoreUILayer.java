@@ -1,3 +1,8 @@
+/**
+ * @author: Ku Wing Fung 18075712d
+ * @author: Wong Tsz Hin 18050573d
+ */
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -37,7 +42,7 @@ public class MoreUILayer extends JDialog {
         
         add(frameHolder);
         this.setTitle(bk.getTitle());
-        this.setSize(500, 300);
+        this.setSize(500, 400);
         this.setLocationRelativeTo(null); // Center the frame 
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
@@ -77,31 +82,33 @@ public class MoreUILayer extends JDialog {
     }
 
     //Perform the borrow action of the book
-    public void jbtBorrowPerformed() {
+    private void jbtBorrowPerformed() {
         targetBook.setAvailable(false);
         sysMessage.setText("The book is borrowed.");
     	refreshInfo();
     }
     
     //Perform the return action of the book
-    public void jbtReturnPerformed(){
-    	targetBook.getReservedQueue().dequeue();
-    	sysMessage.setText("This book is returned.");
+    private void jbtReturnPerformed(){
+    	String message = "The Book is returned.\n";
     	if(targetBook.getReservedQueue().getSize() == 0) {
     		targetBook.setAvailable(true);
+    	} else {
+    		message += "The book is now borrowed by " + targetBook.getReservedQueue().dequeue() + ".";
     	}
+    	sysMessage.setText(message);
     	refreshInfo();
     }
     
     //Ask for the input of a name and mark it as a reserver of the book
-    public void jbtReservePerformed() {
+    private void jbtReservePerformed() {
     	String name = JOptionPane.showInputDialog("What'your name?");
     	targetBook.getReservedQueue().enqueue(name);
     	sysMessage.setText("This book is reserved by "  + name + ".");
     }
     
     //Display the reserved queue of the book
-    public void jbtWaitingQueuePerformed() {
+    private void jbtWaitingQueuePerformed() {
     	sysMessage.setText(targetBook.getWaitingQueueMsg());
     }
     
