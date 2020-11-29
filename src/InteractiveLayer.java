@@ -69,7 +69,7 @@ public class InteractiveLayer extends JPanel {
 	JFrame thisFrame;
 
 	//Book linkedlist for the system
-	MyLinkedList<Book> bookLinkedList = new MyLinkedList<Book>();
+	MyLinkedList<Book> bookLinkedList;
 	
 	/* Variable to store the status of display order for the display all buttons
 	True = ascending order    False = descending order */
@@ -499,7 +499,6 @@ public class InteractiveLayer extends JPanel {
 		} catch (FileNotFoundException e) {
 			//e.printStackTrace();		//For debugging purpose, disabled as unnecessary
 		}
-		
 		return csvHolder;
 	}
 	

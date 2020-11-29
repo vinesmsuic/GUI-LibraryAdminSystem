@@ -41,15 +41,14 @@ public class Book{
     public Book(String ISBN, String title, String available, String queueList){
     	this.ISBN = ISBN;
     	this.title = title;
-    	if(available.contains("true"))
-    	{
+    	if (available.contains("true")){
     		this.available = true;
-    	}else {
+    	} else {
     		this.available = false;
         }
         reservedQueue = new MyQueue<String>();
         String temp = queueList.replace("Queue: ", "");
-        if (temp.length()>2){
+        if (temp.length() > 2){
             StringBuilder queueData = new StringBuilder(temp);
     	    queueData.deleteCharAt(queueData.length() - 1);
             queueData.deleteCharAt(0);
@@ -58,7 +57,6 @@ public class Book{
             	reservedQueue.enqueue(name);
             }
         }
-    	
     }
 
     //Return the title of the book
