@@ -5,4 +5,4 @@ This subject will provide students with the principles of object-oriented softwa
 
 Demo Video:
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/MixsGTvyth0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![Watch the video](https://img.youtube.com/vi/MixsGTvyth0/maxresdefault.jpg)](https://youtu.be/MixsGTvyth0)
